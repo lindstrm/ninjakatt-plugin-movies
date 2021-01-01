@@ -115,8 +115,7 @@ module.exports = class Movies {
     let items = feedItems.filter(x =>
       x.resolution &&
       !x.episode &&
-      !x.season &&
-      !x.categories.some(y => y.match(/0-day|Audio|PC|BoxSets|Anime|Music Videos|PC-ISO|Episodes/))
+      !x.season
     );
 
     // Filter low resolutions

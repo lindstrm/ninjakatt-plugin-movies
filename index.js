@@ -32,6 +32,7 @@ module.exports = class Movies {
     this.route('post', 'download', this.postDownload);
     this.route('post', 'settings', this.postSettings);
     this.route('get', 'upcoming', this.getUpcomingMovies);
+    this.route('get', 'popular', this.getPopularMovies);
   }
 
   /********* Route Functions *********/
@@ -103,6 +104,14 @@ module.exports = class Movies {
       return res.status(400).send();
     }
     const data = await this.tmdb.getUpcoming();
+    return res.status(200).send(data.results);
+  }
+
+  getPopularMovies = async (req, res) => {
+    if (!this.tmdb) {
+      return res.status(400).send();
+    }
+    const data = await this.tmdb.getPopular();
     return res.status(200).send(data.results);
   }
 

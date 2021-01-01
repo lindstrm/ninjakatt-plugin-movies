@@ -10,4 +10,10 @@ module.exports = class TMDB {
     const response = await axios.get(url);
     return response.data;
   }
+
+  async getPopular(page = 1) {
+    const url = `https://api.themoviedb.org/3/movie/popular?api_key=${this.apikey}&language=en-US&page=${page}&region=US`;
+    const response = await axios.get(url);
+    return response.data;
+  }
 }

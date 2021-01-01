@@ -2,16 +2,22 @@ const { Movie, MovieTorrent } = require('./Entities/Movie');
 const ptt = require('parse-torrent-title');
 const fs = require('fs-extra');
 const path = require('path');
+const TMDB = require('./Services/tmdb');
 const emitter = global.emitter;
 
 module.exports = class Movies {
   constructor() {
     this.construct(__dirname);
+    this.tmdb = null;
   }
 
   setup() {
     this.logDebug('Setting up movies plugin');
     this.settings.movies = this.settings.movies.map((s) => this.getMovie(s));
+
+    if (this.settings.tmdbAPIKey.length) {
+      this._initTMDB();
+    }
   }
 
   subscriptions() {
@@ -25,6 +31,7 @@ module.exports = class Movies {
     this.route('post', 'remove', this.deleteMovie);
     this.route('post', 'download', this.postDownload);
     this.route('post', 'settings', this.postSettings);
+    this.route('get', 'upcoming', this.getUpcomingMovies);
   }
 
   /********* Route Functions *********/
@@ -82,10 +89,22 @@ module.exports = class Movies {
     }
     Object.keys(settings).forEach(x => {
       this.settings[x] = settings[x];
+
+      if (x === 'tmdbAPIKey' && !this.tmdb) {
+        this._initTMDB();
+      }
     });
     this.saveSettings(this.settings);
     return res.status(200).send(this.getSettings());
   };
+
+  getUpcomingMovies = async (req, res) => {
+    if (!this.tmdb) {
+      return res.status(400).send();
+    }
+    const data = await this.tmdb.getUpcoming();
+    return res.status(200).send(data.results);
+  }
 
 
   /********* Event Functions *********/
@@ -238,6 +257,10 @@ module.exports = class Movies {
       default:
         return 10;
     }
+  }
+
+  _initTMDB() {
+    this.tmdb = new TMDB(this.settings.tmdbAPIKey)
   }
 
   getSettings() {

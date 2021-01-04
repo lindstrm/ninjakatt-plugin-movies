@@ -11,7 +11,7 @@ module.exports = class TMDB {
     const response = await axios.get(url);
 
     if (response.data.total_pages > page) {
-      this.tmp = response.data.results;
+      this.tmp.push(...response.data.results);
       return this.getUpcoming(page + 1);
     }
 

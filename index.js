@@ -141,15 +141,19 @@ module.exports = class Movies {
         .filter(x => x.title === movie.name.toLowerCase())
         .filter(x => !movie.torrents.find(y => x.link === y.uri))
 
-      movie.torrents.push(...newTorrents.map(x =>
-        new MovieTorrent({
-          title: x.release,
-          fileName: x.fileName,
-          uri: x.link,
-          torrentDomain: feedDomain,
-          savePath: this.settings.savePath
-        })
-      ));
+      if (newTorrents.length) {
+        this.logInfo(`Found release for ${movie.name}: ${filename(torrentPath)}`, { color: 'green' });
+
+        movie.torrents.push(...newTorrents.map(x =>
+          new MovieTorrent({
+            title: x.release,
+            fileName: x.fileName,
+            uri: x.link,
+            torrentDomain: feedDomain,
+            savePath: this.settings.savePath
+          })
+        ));
+      }
     });
 
     this.settings.movies = moviesToDownload;

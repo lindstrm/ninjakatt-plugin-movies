@@ -3,6 +3,7 @@ const ptt = require('parse-torrent-title');
 const fs = require('fs-extra');
 const path = require('path');
 const TMDB = require('./Services/tmdb');
+const { filename } = require(`${global.appRoot}/lib/helpers`);
 const emitter = global.emitter;
 
 module.exports = class Movies {

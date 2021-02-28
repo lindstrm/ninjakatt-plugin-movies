@@ -143,7 +143,7 @@ module.exports = class Movies {
         .filter(x => !movie.torrents.find(y => x.link === y.uri))
 
       if (newTorrents.length) {
-        this.logInfo(`Found release for ${movie.name}: ${filename(torrentPath)}`, { color: 'green' });
+        this.logInfo(`Found ${newTorrents.length} ${newTorrents.length > 1 ? 'releases' : 'release'}  for ${movie.name}: ${newTorrents.map(x => x.fileName).join(', ')}`, { color: 'green' });
 
         movie.torrents.push(...newTorrents.map(x =>
           new MovieTorrent({
